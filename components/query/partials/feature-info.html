@@ -1,0 +1,83 @@
+<div ng-show="data.coordinates[0].name.length > 0" class="card panel-default hs-main-panel">
+    <!--<div class="card-body">-->
+    <div class="feature-list">
+      <md-toolbar class="md-hue-1" ng-show="data.features[0]['feature']['values_']">
+          <div class="md-toolbar-tools">
+              <h2 class="md-flex">{{ data.features[0]['feature']['values_']['name'] }}</h2>
+
+              <div flex></div>
+
+              <md-button class="md-icon-button" aria-label="Close" ng-click="cancelQueryDialog()">
+                  <md-icon md-menu-origin class="material-icons">close</md-icon>
+              </md-button>
+          </div>
+      </md-toolbar>
+      <md-content>
+      <div class="img-float">
+          <img ng-src="{{ 'https://db.atlasbestpractices.com' + data.features[0]['feature']['values_'].img }}" alt="Best Practice thumbnail">
+      </div>
+      <div class="content-body">
+          <div class="main-content">
+              <h2><span ng-if="data.features[0]['feature']['values_']['region']">{{ data.features[0]['feature']['values_']['region'] }}, </span>{{ data.features[0]['feature']['values_']['country'] }}</h2>
+              <p class="content-info" ng-repeat="url in data.features[0]['feature']['values_'].website.split(',')" ng-if="data.features[0]['feature']['values_']['website']"><a target="_blank" ng-href="{{url}}">{{ url }}</a></p>
+
+              <h3 ng-if="data.features[0]['feature']['values_'].biomass_source" class="heading">Biomass source</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['biomass_source']">{{ data.features[0]['feature']['values_']['biomass_source'] }}</p>
+
+              <h3 ng-if="featureDetails.product" class="heading">Product</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['product']">{{ data.features[0]['feature']['values_']['product'] }}</p>
+
+              <h3 ng-if="data.features[0]['feature']['values_'].contact" class="heading">Contact</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['contact']" ng-bind-html="data.features[0]['feature']['values_']['contact']"></p>
+
+              <h3 ng-if="data.features[0]['feature']['values_'].summary_en" class="heading">Summary</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['summary_en']" ng-bind-html="data.features[0]['feature']['values_']['summary_en']"></p>
+          </div>
+          <div class="additional-content">
+              <h3 ng-if="data.features[0]['feature']['values_']['partner']" class="heading">Partner</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['partner']" ng-bind-html="data.features[0]['feature']['values_']['partner']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['context']" class="heading">Background context</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['context']" ng-bind-html="data.features[0]['feature']['values_']['context']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['description']" class="heading">Description of the process, activity or business model</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['description']" ng-bind-html="data.features[0]['feature']['values_']['description']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['actors']" class="heading">List the main actors</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['actors']" ng-bind-html="data.features[0]['feature']['values_']['actors']"></p>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['phase']" ng-bind-html="data.features[0]['feature']['values_']['phase']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['phase']" class="heading">Phase of the innovation</h3>
+              <h3 ng-if="data.features[0]['feature']['values_']['process']" class="heading">Innovation in the process</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['process']" ng-bind-html="data.features[0]['feature']['values_']['process']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['outcomes']" class="heading">Expected or final outcomes </h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['outcomes']" ng-bind-html="data.features[0]['feature']['values_']['outcomes']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['farmer_benefits']" class="heading">Benefit for the famers</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['farmer_benefits']" ng-bind-html="data.features[0]['feature']['values_']['farmer_benefits']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['bbpc_benefits']" class="heading">Benefit/added value for the bio-based product companies</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['bbpc_benefits']" ng-bind-html="data.features[0]['feature']['values_']['bbpc_benefits']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['other_benefits']" class="heading">Benefit/added value for other practioners or end-users</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['other_benefits']" ng-bind-html="data.features[0]['feature']['values_']['other_benefits']"></p>
+              <h3 ng-if="data.features[0]['feature']['values_']['other_factors']" class="heading">Other factors that make possible a successful realisation of the practice/activity</h3>
+              <p class="content-info" ng-if="data.features[0]['feature']['values_']['other_factors']" ng-bind-html="data.features[0]['feature']['values_']['other_factors']"></p>
+              <!--<p class="content-info">{{ data.features[0]["feature"]["values_"]["summary_en"] }}</p>-->
+              <!--<hs.query.feature ng-repeat="item in data.features | orderBy : 'name'" feature="item"></hs.query.feature>-->
+
+          </div>
+        <div class="dropdown" ng-show="data.featureInfoHtmls.length > 0">
+            <button class="btn btn-light w-100 dropdown-toggle rounded-0" ng-init="featureInfoExpanded = true"
+                data-toggle="dropdown" ng-aria-expanded="featureInfoExpanded"
+                ng-click="featureInfoExpanded = !featureInfoExpanded">
+                <translate>Feature info</translate>
+            </button>
+
+            <!--<div class="dropdown-menu position-relative w-100" ng-class="{'show': featureInfoExpanded}"
+                ng-repeat="html in data.featureInfoHtmls" ng-bind-html="html"></div>-->
+        </div>
+        <!--<hs.query.feature ng-repeat="item in data.features | orderBy : 'name'" feature="item"></hs.query.feature>-->
+        <!--<table class="table table-striped" style="table-layout:fixed" ng-show="data.attributes.length > 0">
+            <tr ng-repeat="attribute in data.attributes | orderBy : name">
+                <td class="first-col">{{attribute.name}}</td>
+                <td class="second-col" ng-bind-html="attribute.value"></td>
+            </tr>
+        </table>-->
+      </md-content>
+    </div>
+    <!--<iframe id="invisible_popup" style="display:block; z-index:12122;left:-10000px; position:absolute"></iframe>-->
+</div>

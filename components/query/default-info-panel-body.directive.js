@@ -1,6 +1,5 @@
 export default ['config', function (config) {
     return {
-      template: require('./partials/default-info-panel-body.html')
+      template: require('./partials/feature-info.html')
     };
   }];
-  

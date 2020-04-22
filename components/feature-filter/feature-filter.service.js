@@ -129,6 +129,7 @@ export default ['$rootScope', 'hs.map.service', 'hs.layermanager.service', 'Core
 
     $rootScope.$on('layermanager.layer_added', function (e, layer) {
         me.prepLayerFilter(layer);
+        me.applyFilters(layer);
 
         if (utils.instOf(layer.layer, VectorLayer)) {
             var source = layer.layer.getSource();
@@ -136,9 +137,9 @@ export default ['$rootScope', 'hs.map.service', 'hs.layermanager.service', 'Core
             var listenerKey = source.on('change', function (e) {
                 if (source.getState() === 'ready') {
                     console.log(source.getState());
-                    Observable.unByKey(listenerKey);
+                    //Observable.unByKey(listenerKey);
                     me.prepLayerFilter(layer);
-                    me.applyFilters(layer);
+
                 }
             });
         }
