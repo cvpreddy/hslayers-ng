@@ -13,8 +13,35 @@ export default [
   'hs.utils.service',
   'hs.utils.layerUtilsService',
   '$window',
-  function ($rootScope, Base, $sce, OlMap, Config, utils, layerUtils, $window) {
+  'hs.layermanager.service',
+  function ($rootScope, Base, $sce, OlMap, Config, utils, layerUtils, $window, LayMan) {
     const me = this;
+
+    this.highlightFeature = function(feature) {
+      me.highlightedStyle = LayMan.currentLayer.layer.get('highlightedStyle');
+      if(me.highlightedStyle){
+        feature.setStyle(me.highlightedStyle);
+        feature.setProperties({
+            class: "highlighted"
+        });
+      };
+    };
+
+
+    this.unhighlightFeature = function(feature){
+      me.style = LayMan.currentLayer.layer.getStyle();
+
+      feature.setProperties({
+          class: ""
+      });
+
+      //does not unhighlight - doesn't assign style to feature
+      feature.setStyle(null);
+      feature.set('style_',null);
+      feature.setStyle(me.style);
+      feature.unset('style_');
+      
+    }
 
     this.selector = new Select({
       condition: click,
@@ -42,6 +69,14 @@ export default [
     $rootScope.$on('queryStatusChanged', () => {
       /*if (Base.queryActive) OlMap.map.addInteraction(me.selector);
             else OlMap.map.removeInteraction(me.selector);*/
+    });
+
+    $rootScope.$on('vectorQuery.featureSelected', (e, feature) => {
+      this.highlightFeature(feature);
+    });
+
+    $rootScope.$on('vectorQuery.featureDelected', (e, feature) => {
+      this.unhighlightFeature(feature);
     });
 
     me.selector.getFeatures().on('add', (e) => {
