@@ -17,8 +17,17 @@ export default [
   function ($rootScope, Base, $sce, OlMap, Config, utils, layerUtils, $window, LayMan) {
     const me = this;
 
+    this.getHighlightedStyle = function(layer){
+      if (layer == null) {
+        return;
+      }
+      if (layer.get('highlightedStyle')) {
+        return layer.get('highlightedStyle');
+      }
+    };
+
     this.highlightFeature = function(feature) {
-      me.highlightedStyle = LayMan.currentLayer.layer.get('highlightedStyle');
+      me.highlightedStyle = this.getHighlightedStyle(LayMan.currentLayer.layer);
       if(me.highlightedStyle){
         feature.setStyle(me.highlightedStyle);
         feature.setProperties({
@@ -27,28 +36,26 @@ export default [
       };
     };
 
-
     this.unhighlightFeature = function(feature){
-      me.style = LayMan.currentLayer.layer.getStyle();
-
       feature.setProperties({
           class: ""
       });
-
-      //does not unhighlight - doesn't assign style to feature
       feature.setStyle(null);
-      feature.set('style_',null);
-      feature.setStyle(me.style);
-      feature.unset('style_');
-      
     }
+
+    this.highlighter = new Select({
+      condition: pointerMove,
+    });
 
     this.selector = new Select({
       condition: click,
-      multi:
+      style: function (feature, layer) {
+        return this.getHighlightedStyle(layer);
+      },
+      /*multi:
         angular.isDefined(Config.query) && Config.query.multi
           ? Config.query.multi
-          : false,
+          : false,*/
       filter: function (feature, layer) {
         if (layer === null) {
           return;
@@ -64,6 +71,7 @@ export default [
 
     $rootScope.$on('map.loaded', (e) => {
       OlMap.map.addInteraction(me.selector);
+      OlMap.map.addInteraction(me.highlighter);
     });
 
     $rootScope.$on('queryStatusChanged', () => {
@@ -97,6 +105,11 @@ export default [
       $rootScope.$broadcast('vectorQuery.featureDelected', e.element);
       //deprecated
       $rootScope.$broadcast('infopanel.feature_deselected', e.element);
+    });
+
+    me.highlighter.on('select', function(e) {
+        if (e.selected.length > 0) me.highlightFeature(e.selected[0], true);
+        if (e.deselected.length > 0) me.unhighlightFeature(e.deselected[0], e.selected.length === 0);
     });
 
     $rootScope.$on('mapQueryStarted', (e) => {
