@@ -197,7 +197,7 @@ export class sensorsService {
                 ))
             );
           });
-          this.$interval(this.fillLastObservations, 60000);
+          this.$interval(this.fillLastObservations.bind(this), 60000);
         },
         (err) => {}
       );
