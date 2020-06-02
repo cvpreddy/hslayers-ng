@@ -1,10 +1,11 @@
+/* eslint-disable angular/no-service-method */
 import '../permalink/permalink.module';
 import '../styles/styles.module';
 import searchController from './search.controller';
 import searchDirective from './search.directive';
 import searchInputDirective from './search-input.directive';
 import searchResultsDirective from './search-results.directive';
-import searchService from './search.service';
+import {HsSearchService} from './search.service';
 
 /**
  * @namespace hs.search
@@ -29,7 +30,7 @@ angular
    * @name HsSearchService
    * @description Provides geolocation search request from site selected in config (geonames/sdi4apps) and pass response to handler on success
    */
-  .factory('HsSearchService', searchService)
+  .service('HsSearchService', HsSearchService)
 
   /**
    * @memberof hs.search

@@ -5,40 +5,40 @@ import {Vector} from 'ol/source';
 import {WKT} from 'ol/format';
 import {transform} from 'ol/proj';
 
-/**
- * @param $http
- * @param $q
- * @param HsUtilsService
- * @param HsConfig
- * @param HsMapService
- * @param HsStylesService
- * @param $rootScope
- */
-export default function (
-  $http,
-  $q,
-  HsUtilsService,
-  HsConfig,
-  HsMapService,
-  HsStylesService,
-  $rootScope
-) {
-  'ngInject';
-  const me = this;
-  this.data = {};
+const formatWKT = new WKT();
 
-  this.data.providers = {};
+export class HsSearchService {
+  constructor(
+    $http,
+    $q,
+    HsUtilsService,
+    HsConfig,
+    HsMapService,
+    HsStylesService,
+    $rootScope
+  ) {
+    'ngInject';
+    Object.assign(this, {
+      $http,
+      $q,
+      HsUtilsService,
+      HsConfig,
+      HsMapService,
+      HsStylesService,
+      $rootScope,
+      data: {
+        providers: {},
+      },
+      searchResultsLayer: new VectorLayer({
+        title: 'Search results',
+        source: new Vector({}),
+        style: HsStylesService.pin_white_blue_highlight,
+        show_in_manager: false,
+      }),
+      canceler: {},
+    });
+  }
 
-  const formatWKT = new WKT();
-
-  this.searchResultsLayer = new VectorLayer({
-    title: 'Search results',
-    source: new Vector({}),
-    style: HsStylesService.pin_white_blue_highlight,
-    show_in_manager: false,
-  });
-
-  this.canceler = {};
   /**
    * @memberof HsSearchService
    * @function request
@@ -46,40 +46,40 @@ export default function (
    * @param {string} query Place name or part of it
    * @description Send geolocation request to Geolocation server (based on app config), pass response to results function
    */
-  this.request = function (query) {
+  request(query) {
     let url = null;
     let providers = [];
     if (
-      angular.isDefined(HsConfig.search_provider) &&
-      angular.isUndefined(HsConfig.searchProvider)
+      angular.isDefined(this.HsConfig.search_provider) &&
+      angular.isUndefined(this.HsConfig.searchProvider)
     ) {
-      HsConfig.searchProvider = HsConfig.search_provider;
+      this.HsConfig.searchProvider = this.HsConfig.search_provider;
     }
 
-    if (angular.isUndefined(HsConfig.searchProvider)) {
+    if (angular.isUndefined(this.HsConfig.searchProvider)) {
       providers = ['geonames'];
     } else if (
-      typeof HsConfig.searchProvider == 'string' ||
-      angular.isFunction(HsConfig.searchProvider)
+      typeof this.HsConfig.searchProvider == 'string' ||
+      angular.isFunction(this.HsConfig.searchProvider)
     ) {
-      providers = [HsConfig.searchProvider];
-    } else if (angular.isObject(HsConfig.searchProvider)) {
-      providers = HsConfig.searchProvider;
+      providers = [this.HsConfig.searchProvider];
+    } else if (angular.isObject(this.HsConfig.searchProvider)) {
+      providers = this.HsConfig.searchProvider;
     }
-    me.cleanResults();
+    this.cleanResults();
     angular.forEach(providers, (provider) => {
       let providerId = provider;
       if (provider == 'geonames') {
-        if (angular.isDefined(HsConfig.geonamesUser)) {
-          url = `http://api.geonames.org/searchJSON?&name_startsWith=${query}&username=${HsConfig.geonamesUser}`;
+        if (angular.isDefined(this.HsConfig.geonamesUser)) {
+          url = `http://api.geonames.org/searchJSON?&name_startsWith=${query}&username=${this.HsConfig.geonamesUser}`;
         } else {
           //Username will have to be set in proxy
-          url = HsUtilsService.proxify(
+          url = this.HsUtilsService.proxify(
             `http://api.geonames.org/searchJSON?&name_startsWith=${query}`
           );
         }
         if (location.protocol == 'https:') {
-          url = HsUtilsService.proxify(url);
+          url = this.HsUtilsService.proxify(url);
         }
       } else if (provider == 'sdi4apps_openapi') {
         url = 'http://portal.sdi4apps.eu/openapi/search?q=' + query;
@@ -93,20 +93,21 @@ export default function (
         }
       }
       //url = utils.proxify(url);
-      if (angular.isDefined(me.canceler[providerId])) {
-        me.canceler[providerId].resolve();
-        delete me.canceler[providerId];
+      if (angular.isDefined(this.canceler[providerId])) {
+        this.canceler[providerId].resolve();
+        delete this.canceler[providerId];
       }
-      me.canceler[providerId] = $q.defer();
+      this.canceler[providerId] = this.$q.defer();
 
-      $http.get(url, {timeout: me.canceler[providerId].promise}).then(
+      this.$http.get(url, {timeout: this.canceler[providerId].promise}).then(
         (response) => {
-          me.searchResultsReceived(response.data, providerId);
+          this.searchResultsReceived(response.data, providerId);
         },
         (err) => {}
       );
     });
-  };
+  }
+
   /**
    * @memberof HsSearchService
    * @function searchResultsReceived
@@ -115,57 +116,61 @@ export default function (
    * @param {string} providerName Name of request provider
    * @description Maintain inner results object and parse response with correct provider parser
    */
-  this.searchResultsReceived = function (response, providerName) {
-    if (angular.isUndefined(me.data.providers[providerName])) {
-      me.data.providers[providerName] = {results: [], name: providerName};
+  searchResultsReceived(response, providerName) {
+    if (angular.isUndefined(this.data.providers[providerName])) {
+      this.data.providers[providerName] = {results: [], name: providerName};
     }
-    const provider = me.data.providers[providerName];
+    const provider = this.data.providers[providerName];
     if (providerName.indexOf('geonames') > -1) {
-      parseGeonamesResults(response, provider);
+      this.parseGeonamesResults(response, provider);
     } else if (providerName == 'sdi4apps_openapi') {
-      parseOpenApiResults(response, provider);
+      this.parseOpenApiResults(response, provider);
     } else {
-      parseGeonamesResults(response, provider);
+      this.parseGeonamesResults(response, provider);
     }
-    $rootScope.$broadcast('search.resultsReceived', {
-      layer: me.searchResultsLayer,
-      providers: me.data.providers,
+    this.$rootScope.$broadcast('search.resultsReceived', {
+      layer: this.searchResultsLayer,
+      providers: this.data.providers,
     });
-  };
+  }
+
   /**
    * @memberof HsSearchService
    * @function hideResultsLayer
    * @public
    * @description Remove results layer from map
    */
-  this.hideResultsLayer = function () {
-    HsMapService.map.removeLayer(me.searchResultsLayer);
-  };
+  hideResultsLayer() {
+    this.HsMapService.map.removeLayer(this.searchResultsLayer);
+  }
+
   /**
    * @memberof HsSearchService
    * @function showResultsLayer
    * @public
    * @description Send geolocation request to Geolocation server (based on app config), pass response to results function
    */
-  this.showResultsLayer = function () {
-    me.hideResultsLayer();
-    HsMapService.map.addLayer(me.searchResultsLayer);
-  };
+  showResultsLayer() {
+    this.hideResultsLayer();
+    this.HsMapService.map.addLayer(this.searchResultsLayer);
+  }
+
   /**
    * @memberof HsSearchService
    * @function cleanResults
    * @public
    * @description Clean all search results from results variable and results layer
    */
-  this.cleanResults = function () {
-    angular.forEach(me.data.providers, (provider) => {
+  cleanResults() {
+    angular.forEach(this.data.providers, (provider) => {
       if (angular.isDefined(provider.results)) {
         provider.results.length = 0;
       }
     });
-    me.searchResultsLayer.getSource().clear();
-    me.hideResultsLayer();
-  };
+    this.searchResultsLayer.getSource().clear();
+    this.hideResultsLayer();
+  }
+
   /**
    * @memberof HsSearchService
    * @function selectResult
@@ -174,22 +179,23 @@ export default function (
    * @param {string} zoomLevel Zoom level to zoom on
    * @description Move map and zoom on selected search result
    */
-  this.selectResult = function (result, zoomLevel) {
-    const coordinate = getResultCoordinate(result);
-    HsMapService.map.getView().setCenter(coordinate);
+  selectResult(result, zoomLevel) {
+    const coordinate = this.getResultCoordinate(result);
+    this.HsMapService.map.getView().setCenter(coordinate);
     if (angular.isUndefined(zoomLevel)) {
       zoomLevel = 10;
     }
-    HsMapService.map.getView().setZoom(zoomLevel);
-    $rootScope.$broadcast('search.zoom_to_center', {
+    this.HsMapService.map.getView().setZoom(zoomLevel);
+    this.$rootScope.$broadcast('search.zoom_to_center', {
       coordinate: transform(
         coordinate,
-        HsMapService.map.getView().getProjection(),
+        this.HsMapService.map.getView().getProjection(),
         'EPSG:4326'
       ),
       zoom: zoomLevel,
     });
-  };
+  }
+
   /**
    * @memberof HsSearchService
    * @function getResultCoordinate
@@ -198,7 +204,7 @@ export default function (
    * @returns {object} Ol.coordinate of selected result
    * @description Parse coordinate of selected result
    */
-  function getResultCoordinate(result) {
+  getResultCoordinate(result) {
     if (
       result.provider_name.indexOf('geonames') > -1 ||
       result.provider_name == 'searchFunctionsearchProvider'
@@ -206,13 +212,13 @@ export default function (
       return transform(
         [parseFloat(result.lng), parseFloat(result.lat)],
         'EPSG:4326',
-        HsMapService.map.getView().getProjection()
+        this.HsMapService.map.getView().getProjection()
       );
     } else if (result.provider_name == 'sdi4apps_openapi') {
       const g_feature = formatWKT.readFeature(result.FullGeom.toUpperCase());
       return g_feature
         .getGeometry()
-        .transform('EPSG:4326', HsMapService.map.getView().getProjection())
+        .transform('EPSG:4326', this.HsMapService.map.getView().getProjection())
         .getCoordinates();
     }
   }
@@ -225,19 +231,20 @@ export default function (
    * @param {object} provider Which provider sent the search results
    * @description Result parser of results from Geonames service
    */
-  function parseGeonamesResults(response, provider) {
+  parseGeonamesResults(response, provider) {
     provider.results = response.geonames;
-    generateGeonamesFeatures(provider);
+    this.generateGeonamesFeatures(provider);
   }
+
   /**
    * @param provider
    */
-  function generateGeonamesFeatures(provider) {
-    const src = me.searchResultsLayer.getSource();
+  generateGeonamesFeatures(provider) {
+    const src = this.searchResultsLayer.getSource();
     angular.forEach(provider.results, (result) => {
       result.provider_name = provider.name;
       const feature = new Feature({
-        geometry: new Point(getResultCoordinate(result)),
+        geometry: new Point(this.getResultCoordinate(result)),
         record: result,
       });
       src.addFeature(feature);
@@ -253,24 +260,24 @@ export default function (
    * @param {object} provider Which provider sent the search results
    * @description Result parser of results from OpenApi service
    */
-  function parseOpenApiResults(response, provider) {
+  parseOpenApiResults(response, provider) {
     provider.results = response.data;
-    generateOpenApiFeatures(provider);
+    this.generateOpenApiFeatures(provider);
   }
+
   /**
    * @param provider
    */
-  function generateOpenApiFeatures(provider) {
-    const src = me.searchResultsLayer.getSource();
+  generateOpenApiFeatures(provider) {
+    const src = this.searchResultsLayer.getSource();
     angular.forEach(provider.results, (result) => {
       result.provider_name = provider.name;
       const feature = new Feature({
-        geometry: new Point(getResultCoordinate(result)),
+        geometry: new Point(this.getResultCoordinate(result)),
         record: result,
       });
       src.addFeature(feature);
       result.feature = feature;
     });
   }
-  return me;
 }
