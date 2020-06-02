@@ -1,14 +1,20 @@
+/* eslint-disable angular/no-service-method */
 import sensorsComponent from './sensors.component';
-import sensorsService from './sensors.service';
 import sensorsUnitDialogComponent from './sensors-unit-dialog.component';
 import sensorsUnitListItemComponent from './sensors-unit-list-item.component';
+import {sensorsService} from './sensors.service';
 
 /**
  * @namespace hs.sensors
  * @memberOf hs
  */
 angular
-  .module('hs.sensors', ['hs.map', 'hs.utils', 'hs.layout', 'ui.bootstrap.datetimepicker'])
+  .module('hs.sensors', [
+    'hs.map',
+    'hs.utils',
+    'hs.layout',
+    'ui.bootstrap.datetimepicker',
+  ])
 
   /**
    * @memberof HsSensorsService
@@ -16,7 +22,7 @@ angular
    * @name hs.sensors
    * @description Panel for listing of sensors
    */
-  .factory('HsSensorsService', sensorsService)
+  .service('HsSensorsService', sensorsService)
 
   /**
    * @memberof hs.sensors.list
