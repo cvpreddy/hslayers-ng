@@ -43,5 +43,9 @@ export class HsConfig {
   search_provider: any;
   geonamesUser: any;
   searchProvider: any;
+  design: string;
+  query: any;
+  queryPoint: string;
+  popUpDisplay: string;
   constructor() {}
 }
