@@ -11,8 +11,6 @@ import {
   HsDimensionServiceProvider,
   HsLanguageServiceProvider,
   HsMapServiceProvider,
-  HsQueryBaseServiceProvider,
-  HsQueryVectorServiceProvider,
   HsWfsGetCapabilitiesServiceProvider,
   HsWmsGetCapabilitiesServiceProvider,
   HsWmtsGetCapabilitiesServiceProvider,
@@ -26,6 +24,7 @@ import {HsLegendModule} from '../legend';
 import {HsLogModule} from '../../common/log/log.module';
 import {HsMeasureModule} from '../measure';
 import {HsPrintModule} from '../print';
+import {HsQueryModule} from '../query';
 import {HsSaveMapModule} from '../save-map';
 import {HsSearchModule} from './../search';
 import {HsSearchService} from './../search/search.service';
@@ -36,6 +35,7 @@ import {HsToolbarModule} from '../toolbar/toolbar.module';
 import {HsUtilsModule} from './../utils';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   declarations: [],
@@ -57,6 +57,8 @@ import {NgModule} from '@angular/core';
     HsSearchModule,
     HsUtilsModule,
     HsToolbarModule,
+    HsQueryModule,
+    TranslateModule.forRoot(),
   ],
   exports: [],
   providers: [
@@ -69,8 +71,6 @@ import {NgModule} from '@angular/core';
     HsWfsGetCapabilitiesServiceProvider,
     HsWmtsGetCapabilitiesServiceProvider,
     HsDimensionServiceProvider,
-    HsQueryVectorServiceProvider,
-    HsQueryBaseServiceProvider,
     HsLanguageServiceProvider,
     {
       provide: Window,
