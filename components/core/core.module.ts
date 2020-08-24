@@ -34,8 +34,20 @@ import {HsSidebarModule} from '../sidebar';
 import {HsStylerModule} from '../styles';
 import {HsToolbarModule} from '../toolbar/toolbar.module';
 import {HsUtilsModule} from './../utils';
-import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
+import {TranslateService} from '../../node_modules/@ngx-translate/core';
+import {TranslateLoader, TranslateModule, TranslateStore} from '../../node_modules/@ngx-translate/core';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {TranslateHttpLoader} from '../../node_modules/@ngx-translate/http-loader';
+
+import { from } from 'rxjs';
+
+export class WebpackTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string) {
+    return from(import(`../../assets/locales/${lang}.json`));
+  } 
+}
+
 
 @NgModule({
   declarations: [],
@@ -57,8 +69,15 @@ import {NgModule} from '@angular/core';
     HsSearchModule,
     HsUtilsModule,
     HsToolbarModule,
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: WebpackTranslateLoader,
+        multi: false,
+      },
+    }),
   ],
-  exports: [],
+  exports: [TranslateModule],
   providers: [
     HsCoreService,
     HsSearchService,
@@ -78,7 +97,15 @@ import {NgModule} from '@angular/core';
     },
     HsCommonEndpointsServiceProvider,
     HsCommonLaymanServiceProvider,
+    TranslateStore,
   ],
   entryComponents: [],
 })
-export class HsCoreModule {}
+export class HsCoreModule {
+  constructor(private translate: TranslateService) {
+    this.translate.addLangs(['en', 'cz']);
+    console.log(this.translate)
+    this.translate.setDefaultLang('en');
+    this.translate.use('en');
+}
+}
