@@ -41,7 +41,8 @@ angular
     'hs.layermanager',
     'hs.save-map',
     'hs.permalink',
-    'hs.toolbar'
+    'hs.toolbar',
+    'hs.query',
   ])
   /**
    * @module hs.core
