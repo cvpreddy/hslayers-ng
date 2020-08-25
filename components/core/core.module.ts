@@ -20,6 +20,8 @@ import {
 import {HsCoreService} from './core.service';
 import {HsDrawModule} from '../draw';
 import {HsDrawService} from '../draw/draw.service';
+import {HsHistoryListModule} from './../../common/history-list';
+import {HsHistoryListService} from './../../common/history-list/history-list.service';
 import {HsLayerManagerModule} from '../layermanager';
 import {HsLayoutModule} from '../layout/layout.module';
 import {HsLegendModule} from '../legend';
@@ -48,6 +50,7 @@ import {NgModule} from '@angular/core';
     HsMeasureModule,
     HsDrawModule,
     HsSidebarModule,
+    HsHistoryListModule,
     HsStylerModule,
     HsPrintModule,
     HsLayerManagerModule,
@@ -60,6 +63,7 @@ import {NgModule} from '@angular/core';
   ],
   exports: [],
   providers: [
+    HsHistoryListService,
     HsCoreService,
     HsSearchService,
     HsDrawService,

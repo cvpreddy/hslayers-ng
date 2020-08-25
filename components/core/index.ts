@@ -3,6 +3,7 @@ import * as angular from 'angular';
 // 'angular-gettext' must be loaded before HSLayers modules
 import 'angular-gettext';
 // eslint-disable-next-line sort-imports-es6-autofix/sort-imports-es6
+import '../../common/history-list';
 import '../drag/drag.module';
 import '../draw';
 import '../layermanager';
@@ -12,9 +13,9 @@ import '../map/map.module';
 import '../permalink';
 import '../print';
 import '../save-map/';
+import '../toolbar';
 import '../translations/js/translations';
 import '../utils';
-import '../toolbar'
 import {HsCoreModule} from './core.module';
 import {HsCoreService} from './core.service';
 import {HsEventBusService} from './event-bus.service';
@@ -41,7 +42,8 @@ angular
     'hs.layermanager',
     'hs.save-map',
     'hs.permalink',
-    'hs.toolbar'
+    'hs.historyList',
+    'hs.toolbar',
   ])
   /**
    * @module hs.core
