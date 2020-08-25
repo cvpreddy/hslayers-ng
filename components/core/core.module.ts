@@ -20,6 +20,8 @@ import {
 import {HsCoreService} from './core.service';
 import {HsDrawModule} from '../draw';
 import {HsDrawService} from '../draw/draw.service';
+import {HsGeolocationModule} from './../geolocation';
+import {HsGeolocationService} from './../geolocation/geolocation.service';
 import {HsLayerManagerModule} from '../layermanager';
 import {HsLayoutModule} from '../layout/layout.module';
 import {HsLegendModule} from '../legend';
@@ -36,7 +38,6 @@ import {HsToolbarModule} from '../toolbar/toolbar.module';
 import {HsUtilsModule} from './../utils';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
-
 @NgModule({
   declarations: [],
   imports: [
@@ -57,9 +58,11 @@ import {NgModule} from '@angular/core';
     HsSearchModule,
     HsUtilsModule,
     HsToolbarModule,
+    HsGeolocationModule,
   ],
   exports: [],
   providers: [
+    HsGeolocationService,
     HsCoreService,
     HsSearchService,
     HsDrawService,
