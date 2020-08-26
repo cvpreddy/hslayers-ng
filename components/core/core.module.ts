@@ -104,10 +104,5 @@ export class WebpackTranslateLoader implements TranslateLoader {
   entryComponents: [],
 })
 export class HsCoreModule {
-  constructor(private translate: TranslateService) {
-    this.translate.addLangs(['en', 'cz']);
-    console.log(this.translate);
-    this.translate.setDefaultLang('en');
-    this.translate.use('cz');
-  }
+  constructor() {}
 }
