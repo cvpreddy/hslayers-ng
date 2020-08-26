@@ -25,6 +25,8 @@ import {HsLayerSelectorService} from './layer-selector.service';
 import {HsLegendModule} from '../legend';
 import {HsPanelHelpersModule} from '../layout/panels/panel-helpers.module';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateModule} from '../../node_modules/@ngx-translate/core';
+
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
@@ -44,6 +46,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     HsPanelHelpersModule,
     HsLegendModule,
     NgbModule,
+    TranslateModule,
   ],
   exports: [
     HsLayerManagerComponent,

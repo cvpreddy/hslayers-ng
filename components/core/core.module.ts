@@ -37,8 +37,7 @@ import {HsUtilsModule} from './../utils';
 import {NgModule} from '@angular/core';
 import {TranslateService} from '../../node_modules/@ngx-translate/core';
 import {TranslateLoader, TranslateModule, TranslateStore} from '../../node_modules/@ngx-translate/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {TranslateHttpLoader} from '../../node_modules/@ngx-translate/http-loader';
+import {HttpClientModule} from '@angular/common/http';
 
 import { from } from 'rxjs';
 
@@ -72,7 +71,7 @@ export class WebpackTranslateLoader implements TranslateLoader {
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
-        useFactory: WebpackTranslateLoader,
+        useClass: WebpackTranslateLoader,
         multi: false,
       },
     }),
@@ -106,6 +105,6 @@ export class HsCoreModule {
     this.translate.addLangs(['en', 'cz']);
     console.log(this.translate)
     this.translate.setDefaultLang('en');
-    this.translate.use('en');
+    this.translate.use('cz');
 }
 }
