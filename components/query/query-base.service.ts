@@ -152,7 +152,7 @@ export class HsQueryBaseService {
           title: l.get('title'),
           layer: l,
           features: this.featuresUnderMouse.filter(
-            (f) => f.getLayer(HsMapService.map) == l
+            (f) => f.getLayer(this.HsMapService.map) == l
           ),
         };
       });
@@ -182,7 +182,7 @@ export class HsQueryBaseService {
     if (feature.getLayer == undefined) {
       return;
     }
-    const layer = feature.getLayer(HsMapService.map);
+    const layer = feature.getLayer(this.HsMapService.map);
     let attrsConfig = [];
     if (layer.get('popUp')?.attributes) {
       //must be an array
