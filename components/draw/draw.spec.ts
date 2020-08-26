@@ -19,8 +19,8 @@ import {HsMapServiceMock} from '../map/map.service.mock';
 import {HsLayerUtilsService} from '../utils/layer-utils.service';
 import {HsLayerUtilsServiceMock} from '../utils/layer-utils.service.mock';
 import {HsConfig} from '../../config.service';
-import {HsQueryBaseService} from '../query/query-base.service.js';
-import {HsQueryVectorService} from '../query/query-vector.service.js';
+import {HsQueryBaseService} from '../query/query-base.service';
+import {HsQueryVectorService} from '../query/query-vector.service';
 
 import {Polygon} from 'ol/geom';
 import {Vector as VectorSource} from 'ol/source';
