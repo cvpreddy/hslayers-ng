@@ -34,19 +34,22 @@ import {HsSidebarModule} from '../sidebar';
 import {HsStylerModule} from '../styles';
 import {HsToolbarModule} from '../toolbar/toolbar.module';
 import {HsUtilsModule} from './../utils';
-import {NgModule} from '@angular/core';
-import {TranslateService} from '../../node_modules/@ngx-translate/core';
-import {TranslateLoader, TranslateModule, TranslateStore} from '../../node_modules/@ngx-translate/core';
 import {HttpClientModule} from '@angular/common/http';
+import {NgModule} from '@angular/core';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateStore,
+} from '../../node_modules/@ngx-translate/core';
+import {TranslateService} from '../../node_modules/@ngx-translate/core';
 
-import { from } from 'rxjs';
+import {from} from 'rxjs';
 
 export class WebpackTranslateLoader implements TranslateLoader {
   getTranslation(lang: string) {
     return from(import(`../../assets/locales/${lang}.json`));
-  } 
+  }
 }
-
 
 @NgModule({
   declarations: [],
@@ -103,8 +106,8 @@ export class WebpackTranslateLoader implements TranslateLoader {
 export class HsCoreModule {
   constructor(private translate: TranslateService) {
     this.translate.addLangs(['en', 'cz']);
-    console.log(this.translate)
+    console.log(this.translate);
     this.translate.setDefaultLang('en');
     this.translate.use('cz');
-}
+  }
 }
