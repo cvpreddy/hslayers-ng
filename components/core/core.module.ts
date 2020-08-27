@@ -9,7 +9,6 @@ import {
   HsCommonLaymanServiceProvider,
   HsConfigProvider,
   HsDimensionServiceProvider,
-  HsLanguageServiceProvider,
   HsMapServiceProvider,
   HsQueryBaseServiceProvider,
   HsQueryVectorServiceProvider,
@@ -20,6 +19,8 @@ import {
 import {HsCoreService} from './core.service';
 import {HsDrawModule} from '../draw';
 import {HsDrawService} from '../draw/draw.service';
+import {HsLanguageModule} from './../language';
+import {HsLanguageService} from './../language/language.service';
 import {HsLayerManagerModule} from '../layermanager';
 import {HsLayoutModule} from '../layout/layout.module';
 import {HsLegendModule} from '../legend';
@@ -39,14 +40,13 @@ import {NgModule} from '@angular/core';
 import {
   TranslateLoader,
   TranslateModule,
+  TranslateService,
   TranslateStore,
-} from '../../node_modules/@ngx-translate/core';
-import {TranslateService} from '../../node_modules/@ngx-translate/core';
-
+} from '@ngx-translate/core';
 import {from} from 'rxjs';
 
 export class WebpackTranslateLoader implements TranslateLoader {
-  getTranslation(lang: string) {
+  getTranslation(lang: string): any {
     return from(import(`../../assets/locales/${lang}.json`));
   }
 }
@@ -65,13 +65,14 @@ export class WebpackTranslateLoader implements TranslateLoader {
     HsStylerModule,
     HsPrintModule,
     HsLayerManagerModule,
+    HsLanguageModule,
     HsSaveMapModule,
     HsLogModule,
     HsShareModule,
     HsSearchModule,
     HsUtilsModule,
     HsToolbarModule,
-    TranslateModule.forChild({
+    TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useClass: WebpackTranslateLoader,
@@ -84,6 +85,9 @@ export class WebpackTranslateLoader implements TranslateLoader {
     HsCoreService,
     HsSearchService,
     HsDrawService,
+    HsLanguageService,
+    TranslateStore,
+    TranslateService,
     HsMapServiceProvider,
     HsConfigProvider,
     HsWmsGetCapabilitiesServiceProvider,
@@ -92,14 +96,12 @@ export class WebpackTranslateLoader implements TranslateLoader {
     HsDimensionServiceProvider,
     HsQueryVectorServiceProvider,
     HsQueryBaseServiceProvider,
-    HsLanguageServiceProvider,
     {
       provide: Window,
       useValue: window,
     },
     HsCommonEndpointsServiceProvider,
     HsCommonLaymanServiceProvider,
-    TranslateStore,
   ],
   entryComponents: [],
 })

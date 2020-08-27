@@ -5,6 +5,7 @@ import 'angular-gettext';
 // eslint-disable-next-line sort-imports-es6-autofix/sort-imports-es6
 import '../drag/drag.module';
 import '../draw';
+import '../language';
 import '../layermanager';
 import '../layout';
 import '../legend';
@@ -12,9 +13,9 @@ import '../map/map.module';
 import '../permalink';
 import '../print';
 import '../save-map/';
+import '../toolbar';
 import '../translations/js/translations';
 import '../utils';
-import '../toolbar'
 import {HsCoreModule} from './core.module';
 import {HsCoreService} from './core.service';
 import {HsEventBusService} from './event-bus.service';
@@ -34,6 +35,7 @@ angular
     'hs.map',
     'gettext',
     'hs.drag',
+    'hs.language',
     'hs.layout',
     'hs.utils',
     'hs.legend',
@@ -41,7 +43,7 @@ angular
     'hs.layermanager',
     'hs.save-map',
     'hs.permalink',
-    'hs.toolbar'
+    'hs.toolbar',
   ])
   /**
    * @module hs.core
